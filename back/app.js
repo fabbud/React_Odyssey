@@ -1,3 +1,4 @@
+require('dotenv').config();
 const http = require('http');
 const path = require('path');
 const express = require('express');
@@ -24,6 +25,6 @@ app.get('/', (req, res) => {
 });
 
 // launch the node server
-let server = app.listen(process.env.PORT || 3000, function () {
+let server = app.listen(process.env.PORT || 5000, function () {
   console.log('Listening on port ' + server.address().port);
 });
