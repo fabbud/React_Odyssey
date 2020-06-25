@@ -1,5 +1,7 @@
 import React from 'react';
+import CloseIcon from '@material-ui/icons/Close';
 import './SignUp.css';
+import { Button, TextField, Snackbar, IconButton } from '@material-ui/core';
 class SignUp extends React.Component {
   constructor(props) {
     super(props);
@@ -9,6 +11,7 @@ class SignUp extends React.Component {
       password: 'monPassw0rd',
       name: 'James',
       lastname: 'Bond',
+      open: false,
     };
   }
 
@@ -19,7 +22,8 @@ class SignUp extends React.Component {
   };
 
   getData = () => {
-    const { flash, ...user } = this.state;
+    const { flash, open, ...user } = this.state;
+    console.log(user);
     fetch('/auth/signup', {
       method: 'POST',
       headers: new Headers({
@@ -36,40 +40,90 @@ class SignUp extends React.Component {
 
   handleSubmit = (e) => {
     e.preventDefault();
+    this.setState({ open: true });
     this.getData();
+  };
+
+  handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    this.setState({ open: false });
   };
 
   render() {
     const formInput = JSON.stringify(this.state);
+
     return (
       <>
-        <h1>{formInput}</h1>
+        <h6>{formInput}</h6>
         <form onSubmit={this.handleSubmit}>
-          <input
+          <p>email</p>
+          <TextField
             className="form"
             type="email"
             name="email"
             onChange={this.updateField}
           />
-          <input
+          <p>password</p>
+          <TextField
             className="form"
             type="password"
             name="password"
             onChange={this.updateField}
           />
-          <input
+          <p>name</p>
+          <TextField
             className="form"
             type="text"
             name="name"
             onChange={this.updateField}
           />
-          <input
+          <p>lastname</p>
+          <TextField
             className="form"
             type="text"
             name="lastname"
             onChange={this.updateField}
           />
-          <input className="form" type="submit" name="email" value="Submit" />
+          <Button
+            className="button"
+            variant="contained"
+            color="primary"
+            type="submit"
+          >
+            Submit
+          </Button>
+          <Snackbar
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'left',
+            }}
+            open={this.state.open}
+            autoHideDuration={6000}
+            onClose={this.handleClose}
+            message={this.state.flash}
+            action={
+              <React.Fragment>
+                <Button
+                  className="button"
+                  color="secondary"
+                  size="small"
+                  onClick={this.handleClose}
+                >
+                  UNDO
+                </Button>
+                <IconButton
+                  size="small"
+                  aria-label="close"
+                  color="inherit"
+                  onClick={this.handleClose}
+                >
+                  <CloseIcon fontSize="small" />
+                </IconButton>
+              </React.Fragment>
+            }
+          />
         </form>
       </>
     );
