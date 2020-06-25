@@ -4,6 +4,7 @@ const connection = require('../../helpers/db');
 
 router.post('/signup', function (req, res, next) {
   const formData = req.body;
+  console.log(formData);
 
   return connection.query(
     'INSERT INTO users SET ?',
