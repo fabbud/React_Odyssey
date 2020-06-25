@@ -1,17 +1,16 @@
 import React from 'react';
 import CloseIcon from '@material-ui/icons/Close';
-import './SignUp.css';
+import '../SignUp/SignUp.css';
 import { Button, TextField, Snackbar, IconButton } from '@material-ui/core';
 import { Link } from 'react-router-dom';
-class SignUp extends React.Component {
+
+class SignIn extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       flash: '',
       email: 'mon@email.com',
       password: 'monPassw0rd',
-      name: 'James',
-      lastname: 'Bond',
       open: false,
     };
   }
@@ -22,28 +21,8 @@ class SignUp extends React.Component {
     this.setState({ [name]: value });
   };
 
-  getData = () => {
-    const { flash, open, ...user } = this.state;
-    console.log(user);
-    fetch('/auth/signup', {
-      method: 'POST',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-      }),
-      body: JSON.stringify(user),
-    })
-      .then((res) => res.json())
-      .then(
-        (res) => this.setState({ flash: res.flash }),
-        (err) => this.setState({ flash: err.flash }),
-      );
-    this.props.history.push('/');
-  };
-
   handleSubmit = (e) => {
     e.preventDefault();
-    this.setState({ open: true });
-    this.getData();
   };
 
   handleClose = (event, reason) => {
@@ -74,27 +53,10 @@ class SignUp extends React.Component {
             name="password"
             onChange={this.updateField}
           />
-          <p>name</p>
-          <TextField
-            className="form"
-            type="text"
-            name="name"
-            onChange={this.updateField}
-          />
-          <p>lastname</p>
-          <TextField
-            className="form"
-            type="text"
-            name="lastname"
-            onChange={this.updateField}
-          />
-          <Button
-            className="button"
-            variant="contained"
-            color="primary"
-            type="submit"
-          >
-            Submit
+          <Button className="button">
+            <Link className="" to="/profile">
+              Submit
+            </Link>
           </Button>
           <Snackbar
             anchorOrigin={{
@@ -126,13 +88,13 @@ class SignUp extends React.Component {
               </React.Fragment>
             }
           />
-          <Link className="" to="/signin">
-            Sign In
-          </Link>
         </form>
+        <Link className="" to="/signup">
+          Sign Up
+        </Link>
       </>
     );
   }
 }
 
-export default SignUp;
+export default SignIn;
