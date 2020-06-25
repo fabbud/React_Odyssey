@@ -4,9 +4,10 @@ class SignUp extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      flash: '',
       email: 'mon@email.com',
       password: 'monPassw0rd',
-      firstname: 'James',
+      name: 'James',
       lastname: 'Bond',
     };
   }
@@ -17,9 +18,25 @@ class SignUp extends React.Component {
     this.setState({ [name]: value });
   };
 
-  handleSubmit = (event) => {
-    event.preventDefault();
-    console.log(this.state);
+  getData = () => {
+    const { flash, ...user } = this.state;
+    fetch('/auth/signup', {
+      method: 'POST',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
+      body: JSON.stringify(user),
+    })
+      .then((res) => res.json())
+      .then(
+        (res) => this.setState({ flash: res.flash }),
+        (err) => this.setState({ flash: err.flash }),
+      );
+  };
+
+  handleSubmit = (e) => {
+    e.preventDefault();
+    this.getData();
   };
 
   render() {
@@ -43,7 +60,7 @@ class SignUp extends React.Component {
           <input
             className="form"
             type="text"
-            name="firstname"
+            name="name"
             onChange={this.updateField}
           />
           <input
