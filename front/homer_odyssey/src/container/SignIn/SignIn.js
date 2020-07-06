@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import CloseIcon from '@material-ui/icons/Close';
 import '../SignUp/SignUp.css';
 import { Button, TextField, Snackbar, IconButton } from '@material-ui/core';
@@ -22,19 +23,38 @@ class SignIn extends React.Component {
   };
 
   handleSubmit = (e) => {
+    const { flash, open, ...user } = this.state;
     e.preventDefault();
+    fetch('/auth/signin', {
+      method: 'POST',
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
+      body: JSON.stringify(user),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        console.log(res);
+        this.props.dispatch({
+          type: 'CREATE_SESSION',
+          user: res.user,
+          token: res.token,
+          message: res.message,
+        });
+        this.setState({ flash: this.props.flash });
+      })
+      .catch((err) => this.setState({ flash: err.message }))
+      .then(this.setState({ open: true }));
   };
 
   handleClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
     this.setState({ open: false });
+    this.props.history.replace('/');
   };
 
   render() {
     const formInput = JSON.stringify(this.state);
-
+    console.log(this.props.flash);
     return (
       <>
         <h6>{formInput}</h6>
@@ -53,10 +73,8 @@ class SignIn extends React.Component {
             name="password"
             onChange={this.updateField}
           />
-          <Button className="button">
-            <Link className="" to="/profile">
-              Submit
-            </Link>
+          <Button type="submit" className="button">
+            Submit
           </Button>
           <Snackbar
             anchorOrigin={{
@@ -97,4 +115,10 @@ class SignIn extends React.Component {
   }
 }
 
-export default SignIn;
+function mapStateToProps(state) {
+  return {
+    flash: state.auth.token,
+  };
+}
+
+export default connect(mapStateToProps)(SignIn);
